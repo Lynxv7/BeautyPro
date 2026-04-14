@@ -1,36 +1,97 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# BeautyPro
 
-## Getting Started
+O BeautyPro é um sistema simples e moderno para gerenciamento de salões de beleza e clínicas.
 
-First, run the development server:
+A ideia aqui é centralizar tudo que um salão precisa no dia a dia:
+agendamentos, clientes, serviços e organização do negócio — tudo em um só lugar.
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+---
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## 💡 Por que esse projeto existe?
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+Esse projeto nasceu pra resolver um problema comum:
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+> “Tudo é feito no papel, WhatsApp ou planilha… e isso vira bagunça rápido.”
 
-## Learn More
+O BeautyPro tenta resolver isso de forma leve, rápida e escalável.
 
-To learn more about Next.js, take a look at the following resources:
+---
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## ⚙️ Tecnologias usadas
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+- Next.js (App Router)
+- TypeScript
+- TailwindCSS + shadcn/ui
+- Drizzle ORM
+- PostgreSQL (Neon)
+- Better Auth
+- React Hook Form + Zod
 
-## Deploy on Vercel
+---
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## 🧠 Como funciona
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+O sistema é multi-tenant (cada usuário tem seu próprio salão).
+
+Fluxo simples:
+
+1. Usuário cria uma conta
+2. Um salão é criado automaticamente
+3. Tudo já fica vinculado a esse salão
+4. A partir daí ele já usa o sistema normalmente
+
+Sem onboarding complicado.
+
+---
+
+## 🏢 Estrutura de dados
+
+Tudo gira em torno do salão:
+
+- usuários pertencem a um salão
+- clientes pertencem a um salão
+- serviços pertencem a um salão
+- agendamentos pertencem a um salão
+
+Isso garante que cada negócio fique totalmente isolado.
+
+---
+
+## 🔐 Login e segurança
+
+A autenticação é feita com Better Auth.
+
+- login com email e senha
+- sessões seguras
+- integração direta com PostgreSQL
+
+---
+
+## 📦 O que o sistema faz hoje
+
+- Criar conta e login
+- Criar salão automaticamente
+- Cadastro de clientes
+- Cadastro de serviços
+- Agendamento de horários
+- Controle básico de status dos agendamentos
+
+---
+
+## 🧱 Banco de dados
+
+Principais tabelas:
+
+- users
+- accounts
+- sessions
+- salons
+- clients
+- services
+- appointments
+
+---
+
+Desenvolvido por Daniel Veloso 🚀
+
+Esse projeto é parte do meu processo de construção de um SaaS real do zero.
