@@ -1,0 +1,34 @@
+{
+  "version": "7",
+  "dialect": "postgresql",
+  "entries": [
+    {
+      "idx": 0,
+      "version": "7",
+      "when": 1776151388229,
+      "tag": "0000_ambitious_nitro",
+      "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1776151546926,
+      "tag": "0001_calm_scream",
+      "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1776181065024,
+      "tag": "0002_add_auth_missing_fields",
+      "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "7",
+      "when": 1776184202289,
+      "tag": "0003_add_salon_id_and_appointments",
+      "breakpoints": true
+    }
+  ]
+}
