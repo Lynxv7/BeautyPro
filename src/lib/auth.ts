@@ -22,6 +22,13 @@ export const auth = betterAuth({
     enabled: true,
   },
 
+  socialProviders: {
+    google: {
+      clientId: process.env.GOOGLE_CLIENT_ID as string,
+      clientSecret: process.env.GOOGLE_CLIENT_SECRET as string,
+    },
+  },
+
   // Expõe salonId no objeto user retornado pela session
   user: {
     additionalFields: {
@@ -29,7 +36,7 @@ export const auth = betterAuth({
         type: "string",
         required: false,
         defaultValue: null,
-        input: false, // não pode ser definido pelo cliente
+        input: false,
       },
     },
   },
