@@ -1,6 +1,6 @@
 "use server";
 
-import { sql, count, sum, eq, gte, lte, and, desc } from "drizzle-orm";
+import { sql, count, sum, eq, gte, lte, and, desc, gt } from "drizzle-orm";
 
 import { db } from "@/db";
 import { appointments, clients, services } from "@/db/schema";
@@ -23,10 +23,16 @@ export type TopService = {
   total: number;
 };
 
+export type DebtorClient = {
+  clientName: string;
+  totalOwedCents: number;
+};
+
 export type DashboardData = {
   chartData: ChartDataPoint[];
   todayAppointments: TodayAppointment[];
   topServices: TopService[];
+  debtorClients: DebtorClient[];
 };
 
 export async function getDashboardData(
@@ -49,55 +55,74 @@ export async function getDashboardData(
 
   const dateGroup = sql<string>`TO_CHAR(${appointments.startsAt} AT TIME ZONE 'America/Sao_Paulo', 'YYYY-MM-DD')`;
 
-  const [chartRows, todayRows, topServicesRows] = await Promise.all([
-    db
-      .select({
-        day: dateGroup,
-        total: count(),
-        revenue: sum(appointments.priceCents),
-      })
-      .from(appointments)
-      .where(
-        and(
-          eq(appointments.salonId, salonId),
-          gte(appointments.startsAt, startDate),
-          lte(appointments.startsAt, endDate),
-        ),
-      )
-      .groupBy(dateGroup)
-      .orderBy(dateGroup),
+  const [chartRows, todayRows, topServicesRows, debtorRows] = await Promise.all(
+    [
+      db
+        .select({
+          day: dateGroup,
+          total: count(),
+          revenue: sum(appointments.priceCents),
+        })
+        .from(appointments)
+        .where(
+          and(
+            eq(appointments.salonId, salonId),
+            gte(appointments.startsAt, startDate),
+            lte(appointments.startsAt, endDate),
+          ),
+        )
+        .groupBy(dateGroup)
+        .orderBy(dateGroup),
 
-    db
-      .select({
-        id: appointments.id,
-        clientName: clients.name,
-        serviceName: services.name,
-        startsAt: appointments.startsAt,
-      })
-      .from(appointments)
-      .innerJoin(clients, eq(appointments.clientId, clients.id))
-      .innerJoin(services, eq(appointments.serviceId, services.id))
-      .where(
-        and(
-          eq(appointments.salonId, salonId),
-          gte(appointments.startsAt, todayStart),
-          lte(appointments.startsAt, todayEnd),
-        ),
-      )
-      .orderBy(appointments.startsAt),
+      db
+        .select({
+          id: appointments.id,
+          clientName: clients.name,
+          serviceName: services.name,
+          startsAt: appointments.startsAt,
+        })
+        .from(appointments)
+        .innerJoin(clients, eq(appointments.clientId, clients.id))
+        .innerJoin(services, eq(appointments.serviceId, services.id))
+        .where(
+          and(
+            eq(appointments.salonId, salonId),
+            gte(appointments.startsAt, todayStart),
+            lte(appointments.startsAt, todayEnd),
+          ),
+        )
+        .orderBy(appointments.startsAt),
 
-    db
-      .select({
-        serviceName: services.name,
-        total: count(),
-      })
-      .from(appointments)
-      .innerJoin(services, eq(appointments.serviceId, services.id))
-      .where(eq(appointments.salonId, salonId))
-      .groupBy(services.name)
-      .orderBy(desc(count()))
-      .limit(5),
-  ]);
+      db
+        .select({
+          serviceName: services.name,
+          total: count(),
+        })
+        .from(appointments)
+        .innerJoin(services, eq(appointments.serviceId, services.id))
+        .where(eq(appointments.salonId, salonId))
+        .groupBy(services.name)
+        .orderBy(desc(count()))
+        .limit(5),
+
+      db
+        .select({
+          clientName: clients.name,
+          totalOwedCents: sum(appointments.amountOwedCents),
+        })
+        .from(appointments)
+        .innerJoin(clients, eq(appointments.clientId, clients.id))
+        .where(
+          and(
+            eq(appointments.salonId, salonId),
+            gt(appointments.amountOwedCents, 0),
+          ),
+        )
+        .groupBy(clients.name)
+        .orderBy(desc(sum(appointments.amountOwedCents)))
+        .limit(5),
+    ],
+  );
 
   // Build the full 21-day range, filling zeroes for days without appointments
   const chartMap = new Map<string, { total: number; revenue: number }>();
@@ -131,5 +156,9 @@ export async function getDashboardData(
       startsAt: r.startsAt as Date,
     })),
     topServices: topServicesRows,
+    debtorClients: debtorRows.map((r) => ({
+      clientName: r.clientName,
+      totalOwedCents: Number(r.totalOwedCents ?? 0),
+    })),
   };
 }

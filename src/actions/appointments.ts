@@ -1,6 +1,6 @@
 "use server";
 
-import { and, eq, gte, desc } from "drizzle-orm";
+import { and, eq, gte, desc, gt } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
 
 import { db } from "@/db";
@@ -166,4 +166,63 @@ export async function deleteAppointment(id: string): Promise<void> {
     .where(and(eq(appointments.id, id), eq(appointments.salonId, salonId)));
 
   revalidatePath("/dashboard/appointments");
+}
+
+export async function getDebtorAppointments(): Promise<
+  AppointmentWithRelations[]
+> {
+  const salonId = await requireSalonId();
+
+  const rows = await db
+    .select({
+      id: appointments.id,
+      salonId: appointments.salonId,
+      clientId: appointments.clientId,
+      serviceId: appointments.serviceId,
+      startsAt: appointments.startsAt,
+      status: appointments.status,
+      notes: appointments.notes,
+      createdAt: appointments.createdAt,
+      clientName: clients.name,
+      serviceName: services.name,
+      durationMinutes: services.durationMinutes,
+      priceCents: appointments.priceCents,
+      paymentMethod: appointments.paymentMethod,
+      amountPaidCents: appointments.amountPaidCents,
+      amountOwedCents: appointments.amountOwedCents,
+    })
+    .from(appointments)
+    .innerJoin(clients, eq(appointments.clientId, clients.id))
+    .innerJoin(services, eq(appointments.serviceId, services.id))
+    .where(
+      and(
+        eq(appointments.salonId, salonId),
+        gt(appointments.amountOwedCents, 0),
+      ),
+    )
+    .orderBy(desc(appointments.startsAt));
+
+  return rows;
+}
+
+export type SettleDebtInput = {
+  paymentMethod: string;
+};
+
+export async function settleDebt(
+  id: string,
+  input: SettleDebtInput,
+): Promise<void> {
+  const salonId = await requireSalonId();
+
+  await db
+    .update(appointments)
+    .set({
+      paymentMethod: input.paymentMethod,
+      amountOwedCents: 0,
+    })
+    .where(and(eq(appointments.id, id), eq(appointments.salonId, salonId)));
+
+  revalidatePath("/dashboard/debtors");
+  revalidatePath("/dashboard");
 }

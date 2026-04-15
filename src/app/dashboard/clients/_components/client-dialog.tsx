@@ -27,7 +27,11 @@ import { createClient, updateClient } from "@/actions/clients";
 
 const schema = z.object({
   name: z.string().min(1, "Nome é obrigatório"),
-  whatsapp: z.string().optional(),
+  whatsapp: z
+    .string()
+    .regex(/^\d{11}$/, "Digite exatamente 11 dígitos numéricos")
+    .optional()
+    .or(z.literal("")),
   email: z.string().email("E-mail inválido").optional().or(z.literal("")),
   notes: z.string().optional(),
 });
@@ -114,7 +118,18 @@ export function ClientDialog({ mode, open, onOpenChange, client }: Props) {
                 <FormItem>
                   <FormLabel>WhatsApp</FormLabel>
                   <FormControl>
-                    <Input placeholder="(11) 99999-9999" {...field} />
+                    <Input
+                      placeholder="11999999999"
+                      inputMode="numeric"
+                      maxLength={11}
+                      {...field}
+                      onChange={(e) => {
+                        const onlyDigits = e.target.value
+                          .replace(/\D/g, "")
+                          .slice(0, 11);
+                        field.onChange(onlyDigits);
+                      }}
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>

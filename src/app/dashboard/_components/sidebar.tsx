@@ -8,6 +8,7 @@ import {
   Scissors,
   CalendarDays,
   LogOut,
+  Wallet,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { authClient } from "@/lib/auth-client";
@@ -21,6 +22,11 @@ const NAV_ITEMS = [
     href: "/dashboard/appointments",
     label: "Agendamentos",
     icon: CalendarDays,
+  },
+  {
+    href: "/dashboard/debtors",
+    label: "Em haver",
+    icon: Wallet,
   },
 ];
 

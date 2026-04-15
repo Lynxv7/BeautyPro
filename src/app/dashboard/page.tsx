@@ -10,6 +10,7 @@ import { getDashboardData } from "./modules/dashboard/actions";
 import { DashboardChart } from "./modules/dashboard/components/dashboard-chart";
 import { AppointmentsTable } from "./modules/dashboard/components/appointments-table";
 import { TopServices } from "./modules/dashboard/components/top-services";
+import { ClientsInDebt } from "./modules/dashboard/components/clients-in-debt";
 
 async function getDashboardStats(salonId: string) {
   const today = new Date();
@@ -56,7 +57,7 @@ export default async function DashboardPage() {
 
   const [
     { clientCount, serviceCount, appointmentCount, todayCount },
-    { chartData, todayAppointments, topServices },
+    { chartData, todayAppointments, topServices, debtorClients },
   ] = await Promise.all([
     getDashboardStats(salonId),
     getDashboardData(salonId),
@@ -124,9 +125,10 @@ export default async function DashboardPage() {
           <AppointmentsTable appointments={todayAppointments} />
         </div>
 
-        {/* Right (1 col): top services */}
-        <div className="lg:col-span-1">
+        {/* Right (1 col): top services + clients in debt */}
+        <div className="flex flex-col gap-6 lg:col-span-1">
           <TopServices services={topServices} />
+          <ClientsInDebt clients={debtorClients} />
         </div>
       </div>
     </div>
