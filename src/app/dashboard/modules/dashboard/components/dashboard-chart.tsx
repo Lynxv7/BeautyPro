@@ -99,15 +99,16 @@ export function DashboardChart({ data }: DashboardChartProps) {
                 borderRadius: "0.5rem",
                 fontSize: "0.8rem",
               }}
-              formatter={(value: number, name: string) => {
+              formatter={(value, name) => {
+                const num = typeof value === "number" ? value : Number(value);
                 if (name === "faturamento")
                   return [
-                    `R$ ${value.toLocaleString("pt-BR", { minimumFractionDigits: 2 })}`,
+                    `R$ ${num.toLocaleString("pt-BR", { minimumFractionDigits: 2 })}`,
                     "Faturamento",
                   ];
-                return [value, "Agendamentos"];
+                return [num, "Agendamentos"];
               }}
-              labelFormatter={(label: string) => `Data: ${label}`}
+              labelFormatter={(label) => `Data: ${label}`}
             />
 
             <Legend

@@ -13,15 +13,9 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import type {
-  AppointmentWithRelations,
-  AppointmentStatus,
-} from "@/actions/appointments";
-import type { Client, Service } from "@/db/schema";
-import {
-  deleteAppointment,
-  updateAppointmentStatus,
-} from "@/actions/appointments";
+import type { AppointmentWithRelations } from "@/actions/appointments";
+import type { AppointmentStatus, Client, Service } from "@/db/schema";
+import { deleteAppointment } from "@/actions/appointments";
 import { AppointmentDialog } from "./appointment-dialog";
 import { PaymentDialog } from "./payment-dialog";
 
@@ -97,17 +91,6 @@ export function AppointmentsTable({ appointments, clients, services }: Props) {
     });
   }
 
-  function handleStatusChange(id: string, status: AppointmentStatus) {
-    startTransition(async () => {
-      try {
-        await updateAppointmentStatus(id, status);
-        toast.success("Status atualizado");
-      } catch {
-        toast.error("Erro ao atualizar status");
-      }
-    });
-  }
-
   return (
     <div className="space-y-4">
       <div className="flex items-center justify-between">
@@ -118,7 +101,7 @@ export function AppointmentsTable({ appointments, clients, services }: Props) {
         </Button>
       </div>
 
-      <div className="rounded-lg border bg-white">
+      <div className="rounded-lg border bg-card">
         <Table>
           <TableHeader>
             <TableRow>

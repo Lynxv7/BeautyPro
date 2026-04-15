@@ -47,7 +47,7 @@ export function LoginForm() {
   });
 
   //  submit
-  async function onSubmit(values: any) {
+  async function onSubmit(values: z.infer<typeof schema>) {
     await authClient.signIn.email(
       {
         email: values.email,

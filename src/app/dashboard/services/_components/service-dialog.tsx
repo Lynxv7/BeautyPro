@@ -2,6 +2,7 @@
 
 import { useTransition } from "react";
 import { useForm } from "react-hook-form";
+import type { Resolver } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { toast } from "sonner";
@@ -36,7 +37,12 @@ const schema = z.object({
   priceReais: z.coerce.number().positive("Preço deve ser positivo"),
 });
 
-type FormValues = z.infer<typeof schema>;
+type FormValues = {
+  name: string;
+  type?: string;
+  durationMinutes: number;
+  priceReais: number;
+};
 
 type Props =
   | {
@@ -56,7 +62,7 @@ export function ServiceDialog({ mode, open, onOpenChange, service }: Props) {
   const [isPending, startTransition] = useTransition();
 
   const form = useForm<FormValues>({
-    resolver: zodResolver(schema),
+    resolver: zodResolver(schema) as Resolver<FormValues>,
     values:
       mode === "edit"
         ? {

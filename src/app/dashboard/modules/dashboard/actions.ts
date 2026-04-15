@@ -47,7 +47,7 @@ export async function getDashboardData(
   const todayEnd = new Date(now);
   todayEnd.setHours(23, 59, 59, 999);
 
-  const dateGroup = sql<string>`TO_CHAR(${appointments.startsAt} AT TIME ZONE 'UTC', 'YYYY-MM-DD')`;
+  const dateGroup = sql<string>`TO_CHAR(${appointments.startsAt} AT TIME ZONE 'America/Sao_Paulo', 'YYYY-MM-DD')`;
 
   const [chartRows, todayRows, topServicesRows] = await Promise.all([
     db
