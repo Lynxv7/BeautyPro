@@ -47,7 +47,7 @@ const registerSchema = z
       .trim()
       .min(8, "A senha deve ter pelo menos 8 caracteres"),
 
-    confirmPassword: z.string().trim().min(8, "Confirme sua senha"),
+    confirmPassword: z.string().trim().min(1, "Confirme sua senha"),
   })
   .refine((data) => data.password === data.confirmPassword, {
     message: "As senhas não coincidem",
@@ -64,6 +64,7 @@ export function SignUpForm() {
 
   const form = useForm<SignUpFormValues>({
     resolver: zodResolver(registerSchema),
+    mode: "onChange",
     defaultValues: {
       name: "",
       email: "",
@@ -71,6 +72,11 @@ export function SignUpForm() {
       confirmPassword: "",
     },
   });
+
+  const watchedPassword = form.watch("password");
+  const watchedConfirm = form.watch("confirmPassword");
+  const passwordsMismatch =
+    watchedConfirm.length > 0 && watchedPassword !== watchedConfirm;
 
   //
   // SUBMIT
@@ -186,8 +192,21 @@ export function SignUpForm() {
                 <FormItem>
                   <FormLabel>Confirmar senha</FormLabel>
                   <FormControl>
-                    <Input type="password" placeholder="********" {...field} />
+                    <Input
+                      type="password"
+                      placeholder="********"
+                      {...field}
+                      onChange={(e) => {
+                        field.onChange(e);
+                        form.trigger("confirmPassword");
+                      }}
+                    />
                   </FormControl>
+                  {passwordsMismatch && (
+                    <p className="text-sm font-medium text-destructive">
+                      As senhas não coincidem
+                    </p>
+                  )}
                   <FormMessage />
                 </FormItem>
               )}

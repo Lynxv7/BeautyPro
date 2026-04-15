@@ -67,10 +67,14 @@ export function ClientsTable({ clients }: Props) {
                   <p className="text-xs text-zinc-500">{client.whatsapp}</p>
                 )}
                 {client.email && (
-                  <p className="text-xs text-zinc-500 truncate">{client.email}</p>
+                  <p className="text-xs text-zinc-500 truncate">
+                    {client.email}
+                  </p>
                 )}
                 {client.notes && (
-                  <p className="text-xs text-zinc-400 truncate">{client.notes}</p>
+                  <p className="text-xs text-zinc-400 truncate">
+                    {client.notes}
+                  </p>
                 )}
               </div>
               <div className="flex gap-1 shrink-0">

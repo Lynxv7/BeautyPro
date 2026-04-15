@@ -17,7 +17,11 @@ import { useRouter } from "next/navigation";
 const NAV_ITEMS = [
   { href: "/dashboard", label: "Dashboard", icon: LayoutDashboard },
   { href: "/dashboard/clients", label: "Clientes", icon: Users },
-  { href: "/dashboard/appointments", label: "Agendamentos", icon: CalendarDays },
+  {
+    href: "/dashboard/appointments",
+    label: "Agendamentos",
+    icon: CalendarDays,
+  },
   { href: "/dashboard/services", label: "Serviços", icon: Scissors },
   { href: "/dashboard/debtors", label: "Em haver", icon: Wallet },
 ];

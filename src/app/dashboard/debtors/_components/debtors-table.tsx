@@ -82,7 +82,9 @@ export function DebtorsTable({ appointments }: Props) {
                 <div>
                   <p className="font-semibold text-sm">{appt.clientName}</p>
                   <p className="text-xs text-zinc-500">{appt.serviceName}</p>
-                  <p className="text-xs text-zinc-400">{formatDate(appt.startsAt)}</p>
+                  <p className="text-xs text-zinc-400">
+                    {formatDate(appt.startsAt)}
+                  </p>
                 </div>
                 <span className="inline-flex items-center rounded-full bg-amber-100 px-2.5 py-0.5 text-xs font-medium text-amber-700 shrink-0">
                   {formatPrice(appt.amountOwedCents ?? 0)}
@@ -90,13 +92,24 @@ export function DebtorsTable({ appointments }: Props) {
               </div>
               <div className="flex items-center justify-between text-xs text-zinc-500">
                 <span>
-                  Total: <span className="text-foreground">{formatPrice(appt.priceCents)}</span>
+                  Total:{" "}
+                  <span className="text-foreground">
+                    {formatPrice(appt.priceCents)}
+                  </span>
                   {appt.amountPaidCents != null && (
-                    <> · Pago: <span className="text-foreground">{formatPrice(appt.amountPaidCents)}</span></>
+                    <>
+                      {" "}
+                      · Pago:{" "}
+                      <span className="text-foreground">
+                        {formatPrice(appt.amountPaidCents)}
+                      </span>
+                    </>
                   )}
                 </span>
                 {appt.paymentMethod && (
-                  <span>{PAYMENT_LABELS[appt.paymentMethod] ?? appt.paymentMethod}</span>
+                  <span>
+                    {PAYMENT_LABELS[appt.paymentMethod] ?? appt.paymentMethod}
+                  </span>
                 )}
               </div>
               <div className="flex justify-end">
