@@ -1,6 +1,6 @@
 # BeautyPro
 
-O BeautyPro é um sistema simples e moderno para gerenciamento de salões de beleza e clínicas.
+O BeautyPro é um sistema simples e moderno para gerenciamento de salões de beleza e studios.
 
 A ideia aqui é centralizar tudo que um salão precisa no dia a dia:
 agendamentos, clientes, serviços e organização do negócio — tudo em um só lugar.
