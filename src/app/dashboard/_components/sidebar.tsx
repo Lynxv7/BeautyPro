@@ -34,10 +34,12 @@ export function Sidebar() {
   }
 
   return (
-    <aside className="flex flex-col w-56 shrink-0 border-r bg-white h-full">
+    <aside className="flex flex-col w-56 shrink-0 border-r border-border bg-sidebar h-full">
       {/* Brand */}
-      <div className="px-6 py-5 border-b">
-        <span className="text-lg font-bold tracking-tight">BeautyPro</span>
+      <div className="px-6 py-5 border-b border-border">
+        <span className="text-lg font-bold tracking-tight gradient-text">
+          BeautyPro
+        </span>
       </div>
 
       {/* Nav */}
@@ -53,10 +55,10 @@ export function Sidebar() {
               key={href}
               href={href}
               className={cn(
-                "flex items-center gap-3 rounded-md px-3 py-2 text-sm font-medium transition-colors",
+                "flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-all",
                 isActive
-                  ? "bg-zinc-900 text-white"
-                  : "text-zinc-600 hover:bg-zinc-100 hover:text-zinc-900",
+                  ? "gradient-primary text-white shadow-sm"
+                  : "text-foreground/60 hover:bg-secondary hover:text-foreground",
               )}
             >
               <Icon className="h-4 w-4 shrink-0" />
@@ -67,10 +69,10 @@ export function Sidebar() {
       </nav>
 
       {/* Sign out */}
-      <div className="px-3 py-4 border-t">
+      <div className="px-3 py-4 border-t border-border">
         <button
           onClick={handleSignOut}
-          className="flex w-full items-center gap-3 rounded-md px-3 py-2 text-sm font-medium text-zinc-600 hover:bg-zinc-100 hover:text-zinc-900 transition-colors"
+          className="flex w-full items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium text-foreground/60 hover:bg-secondary hover:text-foreground transition-all"
         >
           <LogOut className="h-4 w-4 shrink-0" />
           Sair

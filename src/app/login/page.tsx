@@ -12,7 +12,7 @@ export default function AuthPage() {
   return (
     <div className="grid min-h-screen grid-cols-1 md:grid-cols-2">
       {/* LEFT SIDE */}
-      <div className="hidden md:flex flex-col justify-between bg-gradient-to-br from-zinc-900 to-zinc-700 text-white p-10">
+      <div className="hidden md:flex flex-col justify-between gradient-hero text-white p-10">
         <div className="text-xl font-bold">BeautyPro</div>
 
         <div className="space-y-4">

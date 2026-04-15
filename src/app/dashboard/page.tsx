@@ -6,6 +6,10 @@ import { db } from "@/db";
 import { clients, services, appointments } from "@/db/schema";
 import { eq, and, gte, count } from "drizzle-orm";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { getDashboardData } from "./modules/dashboard/actions";
+import { DashboardChart } from "./modules/dashboard/components/dashboard-chart";
+import { AppointmentsTable } from "./modules/dashboard/components/appointments-table";
+import { TopServices } from "./modules/dashboard/components/top-services";
 
 async function getDashboardStats(salonId: string) {
   const today = new Date();
@@ -50,8 +54,13 @@ export default async function DashboardPage() {
   const session = await auth.api.getSession({ headers: await headers() });
   const salonId = (session!.user as Record<string, unknown>).salonId as string;
 
-  const { clientCount, serviceCount, appointmentCount, todayCount } =
-    await getDashboardStats(salonId);
+  const [
+    { clientCount, serviceCount, appointmentCount, todayCount },
+    { chartData, todayAppointments, topServices },
+  ] = await Promise.all([
+    getDashboardStats(salonId),
+    getDashboardData(salonId),
+  ]);
 
   const stats = [
     {
@@ -89,6 +98,7 @@ export default async function DashboardPage() {
         </p>
       </div>
 
+      {/* Stats cards */}
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4">
         {stats.map(({ title, value, icon: Icon, description }) => (
           <Card key={title}>
@@ -104,6 +114,20 @@ export default async function DashboardPage() {
             </CardContent>
           </Card>
         ))}
+      </div>
+
+      {/* Main grid: 3 columns */}
+      <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
+        {/* Left (2 cols): chart + today's appointments */}
+        <div className="flex flex-col gap-6 lg:col-span-2">
+          <DashboardChart data={chartData} />
+          <AppointmentsTable appointments={todayAppointments} />
+        </div>
+
+        {/* Right (1 col): top services */}
+        <div className="lg:col-span-1">
+          <TopServices services={topServices} />
+        </div>
       </div>
     </div>
   );
