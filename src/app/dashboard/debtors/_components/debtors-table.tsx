@@ -66,7 +66,55 @@ export function DebtorsTable({ appointments }: Props) {
         </div>
       </div>
 
-      <div className="rounded-lg border bg-card">
+      {/* ── Mobile: cards ───────────────────────────────────────── */}
+      <div className="flex flex-col gap-3 md:hidden">
+        {appointments.length === 0 ? (
+          <p className="py-8 text-center text-zinc-400 text-sm">
+            Nenhum cliente com valor em aberto.
+          </p>
+        ) : (
+          appointments.map((appt) => (
+            <div
+              key={appt.id}
+              className="rounded-lg border bg-card p-4 space-y-2"
+            >
+              <div className="flex items-start justify-between gap-2">
+                <div>
+                  <p className="font-semibold text-sm">{appt.clientName}</p>
+                  <p className="text-xs text-zinc-500">{appt.serviceName}</p>
+                  <p className="text-xs text-zinc-400">{formatDate(appt.startsAt)}</p>
+                </div>
+                <span className="inline-flex items-center rounded-full bg-amber-100 px-2.5 py-0.5 text-xs font-medium text-amber-700 shrink-0">
+                  {formatPrice(appt.amountOwedCents ?? 0)}
+                </span>
+              </div>
+              <div className="flex items-center justify-between text-xs text-zinc-500">
+                <span>
+                  Total: <span className="text-foreground">{formatPrice(appt.priceCents)}</span>
+                  {appt.amountPaidCents != null && (
+                    <> · Pago: <span className="text-foreground">{formatPrice(appt.amountPaidCents)}</span></>
+                  )}
+                </span>
+                {appt.paymentMethod && (
+                  <span>{PAYMENT_LABELS[appt.paymentMethod] ?? appt.paymentMethod}</span>
+                )}
+              </div>
+              <div className="flex justify-end">
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => setSettleTarget(appt)}
+                >
+                  Quitar
+                </Button>
+              </div>
+            </div>
+          ))
+        )}
+      </div>
+
+      {/* ── Desktop: table ──────────────────────────────────────── */}
+      <div className="hidden md:block rounded-lg border bg-card">
         <Table>
           <TableHeader>
             <TableRow>

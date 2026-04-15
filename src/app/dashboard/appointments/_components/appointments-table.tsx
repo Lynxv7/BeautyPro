@@ -97,11 +97,78 @@ export function AppointmentsTable({ appointments, clients, services }: Props) {
         <h1 className="text-2xl font-bold tracking-tight">Agendamentos</h1>
         <Button size="sm" onClick={() => setCreateOpen(true)}>
           <Plus className="mr-2 h-4 w-4" />
-          Novo agendamento
+          <span className="hidden sm:inline">Novo agendamento</span>
+          <span className="sm:hidden">Novo</span>
         </Button>
       </div>
 
-      <div className="rounded-lg border bg-card">
+      {/* ── Mobile: cards ───────────────────────────────────────── */}
+      <div className="flex flex-col gap-3 md:hidden">
+        {appointments.length === 0 ? (
+          <p className="py-8 text-center text-zinc-400 text-sm">
+            Nenhum agendamento cadastrado ainda.
+          </p>
+        ) : (
+          appointments.map((appt) => (
+            <div
+              key={appt.id}
+              className="rounded-lg border bg-card p-4 space-y-2"
+            >
+              <div className="flex items-start justify-between gap-2">
+                <div>
+                  <p className="font-semibold text-sm">{appt.clientName}</p>
+                  <p className="text-xs text-zinc-500">{appt.serviceName}</p>
+                </div>
+                <StatusBadge status={appt.status} />
+              </div>
+              <div className="flex items-center justify-between text-xs text-zinc-500">
+                <span>{formatDate(appt.startsAt)}</span>
+                <span className="font-medium text-foreground">
+                  {formatPrice(appt.priceCents)}
+                </span>
+              </div>
+              {appt.paymentMethod && (
+                <p className="text-xs text-zinc-500">
+                  Pagamento:{" "}
+                  <span className="text-foreground">
+                    {PAYMENT_LABELS[appt.paymentMethod] ?? appt.paymentMethod}
+                    {appt.amountPaidCents != null &&
+                      ` (${formatPrice(appt.amountPaidCents)})`}
+                  </span>
+                </p>
+              )}
+              {appt.amountOwedCents != null && appt.amountOwedCents > 0 && (
+                <span className="inline-flex items-center rounded-full bg-amber-100 px-2.5 py-0.5 text-xs font-medium text-amber-700">
+                  Em haver: {formatPrice(appt.amountOwedCents)}
+                </span>
+              )}
+              <div className="flex justify-end gap-2 pt-1">
+                {appt.status === "scheduled" && (
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    disabled={isPending}
+                    onClick={() => setPaymentTarget(appt)}
+                  >
+                    Concluir
+                  </Button>
+                )}
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  disabled={isPending}
+                  onClick={() => handleDelete(appt.id)}
+                >
+                  <Trash2 className="h-4 w-4 text-red-500" />
+                </Button>
+              </div>
+            </div>
+          ))
+        )}
+      </div>
+
+      {/* ── Desktop: table ──────────────────────────────────────── */}
+      <div className="hidden md:block rounded-lg border bg-card">
         <Table>
           <TableHeader>
             <TableRow>
